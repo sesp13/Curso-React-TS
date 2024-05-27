@@ -1,10 +1,19 @@
 import { Guitar } from './components/Guitar';
 import { Header } from './components/Header';
+import { IGuitar } from './models';
 import { db } from './data/db.js';
 import { useState } from 'react';
 
 function App() {
-  const [data, setData] = useState(db);
+  const [data, setData] = useState<IGuitar[]>(db);
+  const [cart, setCart] = useState<IGuitar[]>([]);
+
+  function addToCart(item: IGuitar) {
+    if (!cart.find((cartItem) => cartItem.id === item.id)) {
+      setCart((prevCart) => [...prevCart, item]);
+    }
+  }
+
   return (
     <>
       <Header />
@@ -12,13 +21,7 @@ function App() {
         <h2 className="text-center">Nuestra Colección</h2>
         <div className="row mt-5">
           {data.map((guitar) => (
-            <Guitar
-              key={guitar.id}
-              name={guitar.name}
-              description={guitar.description}
-              imagePath={guitar.image}
-              price={guitar.price}
-            />
+            <Guitar key={guitar.id} guitar={guitar} addToCart={addToCart} />
           ))}
         </div>
       </main>
