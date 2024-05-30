@@ -5,3 +5,7 @@ export interface IGuitar {
   image: string;
   price: number;
 }
+
+export interface IGuitarCart extends IGuitar {
+  quantity: number;
+}
