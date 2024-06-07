@@ -1,5 +1,5 @@
 import { IGuitarCart } from '../models';
-import { useMemo } from 'react';
+import { useCart } from '../hooks/useCart';
 
 interface HeaderProps {
   cart: IGuitarCart[];
@@ -7,6 +7,8 @@ interface HeaderProps {
   increaseQuantity: (id: string) => any;
   decreaseQuantity: (id: string) => any;
   clearCart: () => any;
+  isEmpty: boolean;
+  cartTotal: number;
 }
 
 export function Header(props: HeaderProps) {
@@ -16,17 +18,9 @@ export function Header(props: HeaderProps) {
     increaseQuantity,
     decreaseQuantity,
     clearCart,
+    isEmpty,
+    cartTotal,
   } = props;
-
-  // State derivado
-  const isEmpty = useMemo(() => cart.length === 0, [cart]);
-  const cartTotal = useMemo(
-    () =>
-      cart.reduce((acum: number, currentItem: IGuitarCart) => {
-        return acum + currentItem.quantity * currentItem.price;
-      }, 0),
-    [cart]
-  );
 
   return (
     <header className="py-5 header">
