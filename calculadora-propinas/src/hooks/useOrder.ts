@@ -4,6 +4,7 @@ import { useState } from 'react';
 
 export const useOrder = () => {
   const [order, setOrder] = useState<OrderItem[]>([]);
+  const [tip, setTip] = useState(0);
 
   const addItem = (item: MenuItem) => {
     const itemExists = order.find((orderItem) => orderItem.id === item.id);
@@ -24,5 +25,10 @@ export const useOrder = () => {
     setOrder(order.filter((item) => item.id !== id));
   };
 
-  return { addItem, removeItem, order };
+  const placeOrder = () => {
+    setOrder([]);
+    setTip(0)
+  };
+
+  return { addItem, removeItem, tip, setTip, order, placeOrder };
 };
