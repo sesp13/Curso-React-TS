@@ -1,19 +1,41 @@
+import { ChangeEvent, FormEvent, useState } from 'react';
+
+import { Activity } from '../types';
 import { categories } from '../data/categories';
-import { useState } from 'react';
 
 export const Form = () => {
-  const [activity, setActivity] = useState({
+  const [activity, setActivity] = useState<Activity>({
     category: 1,
     name: '',
     calories: 0,
   });
 
-  const handleChange = (e) => {
-    setActivity({ ...activity, [e.target.id]: e.target.value });
+  const handleChange = (
+    e: ChangeEvent<HTMLSelectElement | HTMLInputElement>
+  ) => {
+    const isNumberField = ['category', 'calories'].includes(e.target.id);
+
+    setActivity({
+      ...activity,
+      [e.target.id]: isNumberField ? +e.target.value : e.target.value,
+    });
+  };
+
+  const isValidActivity = (): boolean => {
+    const { name, calories } = activity;
+    return name.trim() !== '' && calories > 0;
+  };
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log('Submit');
   };
 
   return (
-    <form className="space-y-5 bg-white p-10 rounded-lg">
+    <form
+      className="space-y-5 bg-white p-10 rounded-lg"
+      onSubmit={handleSubmit}
+    >
       <div className="grid grid-cols-1 gap-3">
         <label htmlFor="category" className="font-bold">
           Categoría:{' '}
@@ -61,8 +83,9 @@ export const Form = () => {
 
       <input
         type="submit"
-        value="Guardar"
-        className="bg-gray-800 hover:bg-gray-900 font-bold w-full uppercase text-white p-3"
+        value={activity.category === 1 ? 'Guardar Comida' : 'Guardar ejercicio'}
+        className="bg-gray-800 hover:bg-gray-900 font-bold w-full uppercase text-white p-3 disabled:opacity-10"
+        disabled={!isValidActivity()}
       />
     </form>
   );
