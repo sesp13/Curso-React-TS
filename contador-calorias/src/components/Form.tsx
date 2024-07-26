@@ -1,14 +1,23 @@
-import { ChangeEvent, FormEvent, useState } from 'react';
+import { ChangeEvent, Dispatch, FormEvent, useState } from 'react';
 
 import { Activity } from '../types';
+import { ActivityActions } from '../reducer/activityReducer';
 import { categories } from '../data/categories';
+import { v4 as uuidv4 } from 'uuid';
 
-export const Form = () => {
-  const [activity, setActivity] = useState<Activity>({
-    category: 1,
-    name: '',
-    calories: 0,
-  });
+export type FormProps = {
+  dispatch: Dispatch<ActivityActions>;
+};
+
+const initialForm: Activity = {
+  id: uuidv4(),
+  category: 1,
+  name: '',
+  calories: 0,
+};
+
+export const Form = ({ dispatch }: FormProps) => {
+  const [activity, setActivity] = useState<Activity>(initialForm);
 
   const handleChange = (
     e: ChangeEvent<HTMLSelectElement | HTMLInputElement>
@@ -28,7 +37,9 @@ export const Form = () => {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log('Submit');
+    dispatch({ type: 'save-activity', payload: { newActivity: activity } });
+    // Reset form
+    setActivity({ ...initialForm, id: uuidv4() });
   };
 
   return (
