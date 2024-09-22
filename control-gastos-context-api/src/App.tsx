@@ -1,10 +1,9 @@
-import { useContext, useMemo } from 'react';
-
-import { BudgetContext } from './context/BudgetContext';
 import { BudgetForm } from './components/BudgetForm';
 import { BudgetTracker } from './components/BudgetTracker';
+import { ExpenseList } from './components/ExpenseList';
 import ExpenseModal from './components/ExpenseModal';
 import { useBudget } from './hooks/useBudget';
+import { useMemo } from 'react';
 
 function App() {
   const { state } = useBudget();
@@ -23,7 +22,8 @@ function App() {
       </div>
 
       {isValidBudget && (
-        <main className='max-w-3xl mx-auto py-10'>
+        <main className="max-w-3xl mx-auto py-10">
+          <ExpenseList />
           <ExpenseModal />
         </main>
       )}
