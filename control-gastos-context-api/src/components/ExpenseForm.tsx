@@ -1,7 +1,7 @@
 import 'react-date-picker/dist/DatePicker.css';
 import 'react-calendar/dist/Calendar.css';
 
-import { ChangeEvent, FormEvent, useState } from 'react';
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { DraftExpense, Value } from '../types';
 
 import DatePicker from 'react-date-picker';
@@ -18,8 +18,19 @@ export const ExpenseForm = () => {
   });
 
   const [error, setError] = useState('');
+  const [previousAmount, setPreviousAmount] = useState(0);
 
-  const { dispatch } = useBudget();
+  const { state, dispatch, remainingBudget } = useBudget();
+
+  useEffect(() => {
+    if (state.editingid) {
+      const editingExpense = state.expenses.filter(
+        (currentExpense) => currentExpense.id === state.editingid
+      )[0];
+      setExpense(editingExpense);
+      setPreviousAmount(editingExpense.amount);
+    }
+  }, [state.editingid]);
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>
@@ -45,15 +56,31 @@ export const ExpenseForm = () => {
       return;
     }
 
-    dispatch({ type: 'add-expense', payload: { expense } });
+    // Validar que no me pase del límite
+    if (expense.amount - previousAmount > remainingBudget) {
+      setError('Presupuesto rebasado');
+      return;
+    }
 
-    // Reiniciar state
-    setExpense({
-      amount: 0,
-      expenseName: '',
-      category: '',
-      date: new Date(),
-    });
+    // Agregar o actualizar el gasto
+    if (state.editingid) {
+      dispatch({
+        type: 'update-expense',
+        payload: { expense: { ...expense, id: state.editingid } },
+      });
+    } else {
+      dispatch({ type: 'add-expense', payload: { expense } });
+
+      // Reiniciar state
+      setExpense({
+        amount: 0,
+        expenseName: '',
+        category: '',
+        date: new Date(),
+      });
+
+      setPreviousAmount(0);
+    }
 
     dispatch({ type: 'close-modal' });
   };
@@ -61,7 +88,7 @@ export const ExpenseForm = () => {
   return (
     <form className="space-y-5" onSubmit={handleSumbit}>
       <legend className="uppercase text-center text-2xl font-black border-b-4 border-blue-500 py-2">
-        Nuevo Gasto
+        {state.editingid ? 'Guardar Cambios' : 'Nuevo Gasto'}
       </legend>
 
       {error && <ErrorMessage>{error}</ErrorMessage>}
@@ -127,7 +154,7 @@ export const ExpenseForm = () => {
 
       <input
         type="submit"
-        value="Registrar Gasto"
+        value={state.editingid ? 'Guardar Cambios' : 'Registrar Gasto'}
         className="bg-blue-600 cursor-pointer w-full p-2 text-white uppercase font-bold rounded-lg"
       />
     </form>
