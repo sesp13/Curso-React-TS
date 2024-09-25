@@ -18,7 +18,7 @@ export const PatientForm = () => {
       >
         <div className="mb-5">
           <label htmlFor="name" className="text-sm uppercase font-bold">
-            Paciente
+            Pacient
           </label>
           <input
             id="name"
