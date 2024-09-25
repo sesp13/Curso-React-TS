@@ -1,7 +1,48 @@
+import { DraftPatient } from '../types';
+import { Error } from './Error';
+import { toast } from 'react-toastify';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { usePatientStore } from '../store';
 
 export const PatientForm = () => {
-  const { register } = useForm();
+  const patients = usePatientStore((state) => state.patients);
+  const activeId = usePatientStore((state) => state.activeId);
+  const addPatient = usePatientStore((state) => state.addPatient);
+  const updatePatient = usePatientStore((state) => state.updatePatient);
+
+  useEffect(() => {
+    if (activeId) {
+      const activePatient = patients.filter(
+        (patient) => patient.id === activeId
+      )[0];
+
+      setValue('name', activePatient.name);
+      setValue('caretaker', activePatient.caretaker);
+      setValue('date', activePatient.date);
+      setValue('email', activePatient.email);
+      setValue('symptoms', activePatient.symptoms);
+    }
+  }, [activeId]);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+    setValue,
+  } = useForm<DraftPatient>();
+
+  const registerPatient = (data: DraftPatient) => {
+    if (activeId) {
+      updatePatient(data);
+      toast.success('Paciente editado correctamente');
+    } else {
+      addPatient(data);
+      toast.success('Paciente registrado correctamente');
+    }
+    reset();
+  };
 
   return (
     <div className="md:w-1/2 lg:w-2/5 mx-5">
@@ -15,6 +56,7 @@ export const PatientForm = () => {
       <form
         className="bg-white shadow-md rounded-lg py-10 px-5 mb-10"
         noValidate
+        onSubmit={handleSubmit(registerPatient)}
       >
         <div className="mb-5">
           <label htmlFor="name" className="text-sm uppercase font-bold">
@@ -29,6 +71,7 @@ export const PatientForm = () => {
               required: 'El nombre del paciente es obligatorio',
             })}
           />
+          {errors.name && <Error>{errors.name?.message}</Error>}
         </div>
 
         <div className="mb-5">
@@ -40,7 +83,11 @@ export const PatientForm = () => {
             className="w-full p-3  border border-gray-100"
             type="text"
             placeholder="Nombre del Propietario"
+            {...register('caretaker', {
+              required: 'El propietario es obligatorio',
+            })}
           />
+          {errors.caretaker && <Error>{errors.caretaker?.message}</Error>}
         </div>
 
         <div className="mb-5">
@@ -52,7 +99,15 @@ export const PatientForm = () => {
             className="w-full p-3  border border-gray-100"
             type="email"
             placeholder="Email de Registro"
+            {...register('email', {
+              required: 'El Email es Obligatorio',
+              pattern: {
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                message: 'Email No Válido',
+              },
+            })}
           />
+          {errors.email && <Error>{errors.email?.message}</Error>}
         </div>
 
         <div className="mb-5">
@@ -63,7 +118,11 @@ export const PatientForm = () => {
             id="date"
             className="w-full p-3  border border-gray-100"
             type="date"
+            {...register('date', {
+              required: 'La fecha de alta es obligatoria',
+            })}
           />
+          {errors.date && <Error>{errors.date?.message}</Error>}
         </div>
 
         <div className="mb-5">
@@ -74,7 +133,11 @@ export const PatientForm = () => {
             id="symptoms"
             className="w-full p-3  border border-gray-100"
             placeholder="Síntomas del paciente"
+            {...register('symptoms', {
+              required: 'Los síntomas son obligatorios',
+            })}
           ></textarea>
+          {errors.symptoms && <Error>{errors.symptoms?.message}</Error>}
         </div>
 
         <input
