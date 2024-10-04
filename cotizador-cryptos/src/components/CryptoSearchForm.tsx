@@ -7,6 +7,7 @@ import { useCryptoStore } from '../store';
 
 export const CryptoSearchForm = () => {
   const cryptoCurrencies = useCryptoStore((state) => state.cryptoCurrencies);
+  const fetchData = useCryptoStore((state) => state.fetchData);
   const [pair, setPair] = useState<Pair>({ currency: '', cryptoCurrency: '' });
   const [error, setError] = useState('');
 
@@ -24,6 +25,7 @@ export const CryptoSearchForm = () => {
       return;
     }
     setError('');
+    fetchData(pair)
   };
 
   return (

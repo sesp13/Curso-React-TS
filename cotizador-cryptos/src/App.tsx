@@ -1,3 +1,4 @@
+import { CryptoPriceDisplay } from './components/CryptoPriceDisplay';
 import { CryptoSearchForm } from './components/CryptoSearchForm';
 import { useCryptoStore } from './store';
 import { useEffect } from 'react';
@@ -16,6 +17,7 @@ function App() {
       </h1>
       <div className="content">
         <CryptoSearchForm />
+        <CryptoPriceDisplay />
       </div>
     </div>
   );
