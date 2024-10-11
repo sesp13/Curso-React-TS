@@ -2,7 +2,7 @@ import { DrinkCard } from '../components/DrinkCard';
 import { useAppStore } from '../stores/useAppStore';
 import { useMemo } from 'react';
 
-export const FavoritesPage = () => {
+const FavoritesPage = () => {
   const favorites = useAppStore((state) => state.favorites);
 
   const hasFavorites = useMemo(() => favorites.length, [favorites]);
@@ -20,9 +20,13 @@ export const FavoritesPage = () => {
             <DrinkCard drink={recipe} key={recipe.idDrink} />
           ))}
         </div>
-      ) : 
-        <p className='my-10 text-center text-2xl'>Los favoritos se mostrarán aquí</p>
-      }
+      ) : (
+        <p className="my-10 text-center text-2xl">
+          Los favoritos se mostrarán aquí
+        </p>
+      )}
     </>
   );
 };
+
+export default FavoritesPage;
