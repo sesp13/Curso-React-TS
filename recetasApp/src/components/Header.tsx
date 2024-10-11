@@ -14,6 +14,7 @@ export const Header = () => {
   const fetchCategories = useAppStore((state) => state.fetchCategories);
   const searchRecipes = useAppStore((state) => state.searchRecipes);
   const categories = useAppStore((state) => state.categories);
+  const showNotification = useAppStore((state) => state.showNotification);
 
   const isHome = useMemo(() => pathname === '/', [pathname]);
 
@@ -31,8 +32,10 @@ export const Header = () => {
     e.preventDefault();
 
     if (Object.values(searchFilters).includes('')) {
-      //TODO Alerta
-      console.log('Todos los campos son obligatorios');
+      showNotification({
+        text: 'Todos los campos son obligatorios',
+        error: true,
+      });
       return;
     }
 
