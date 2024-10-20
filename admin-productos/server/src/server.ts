@@ -1,4 +1,4 @@
-import colors from 'colors'
+import colors from 'colors';
 import db from './config/db';
 import express from 'express';
 import productsRouter from './router';
@@ -7,7 +7,7 @@ import productsRouter from './router';
 async function connectDB() {
   try {
     await db.authenticate();
-    db.sync();
+    await db.sync();
     console.log(colors.blue('Conexión exitosa a la base de datos'));
   } catch (error) {
     console.log(error);
@@ -18,6 +18,9 @@ async function connectDB() {
 connectDB();
 
 const server = express();
+
+// Habilitar lectura de json
+server.use(express.json());
 
 // Routing
 server.use('/api/products', productsRouter);
