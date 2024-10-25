@@ -4,7 +4,7 @@ import express from 'express';
 import productsRouter from './router';
 
 // Conectar a la base de datos
-async function connectDB() {
+export async function connectDB() {
   try {
     await db.authenticate();
     await db.sync();

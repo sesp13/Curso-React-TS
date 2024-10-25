@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest --detectOpenHandles",
+    "test:coverage": "npm run pretest && jest --detectOpenHandles --coverage",
     "dev": "nodemon --exec npx tsx src/index.ts",
     "build": "npx tsc",
     "pretest": "ts-node ./src/data --clear"
