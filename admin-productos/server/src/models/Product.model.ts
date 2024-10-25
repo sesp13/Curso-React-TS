@@ -7,7 +7,7 @@ class Product extends Model {
   @Column({ type: DataType.STRING(100) })
   declare name: string;
 
-  @Column({ type: DataType.FLOAT(5, 2) }) declare price: number;
+  @Column({ type: DataType.FLOAT }) declare price: number;
 
   @Default(true)
   @Column({ type: DataType.BOOLEAN })

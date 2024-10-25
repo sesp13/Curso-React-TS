@@ -69,6 +69,7 @@ router.patch(
 router.delete(
   '/:id',
   param('id').isInt().withMessage('id no válido'),
+  handleInputErrors,
   deleteProduct
 );
 

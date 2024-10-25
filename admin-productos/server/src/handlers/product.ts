@@ -21,7 +21,12 @@ export const getProductById = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
     const product = await Product.findByPk(id);
+    if (!product) {
+      res.status(404).json({ error: 'Producto no encontrado' });
+      return;
+    }
     res.json({ msg: `Obtener producto ${id}`, data: product });
+    return;
   } catch (error) {
     console.log(error);
     res.json({ msg: 'Hubo un error al obtener los productos' });
@@ -53,13 +58,15 @@ export const createProduct = async (req: Request, res: Response) => {
 
   try {
     const product = await Product.create(req.body);
-    res.json({
+    res.status(201).json({
       msg: 'producto guardado correctamente',
       data: { product },
     });
+    return;
   } catch (error) {
     console.log(error);
     res.json({ msg: 'Hubo un error al crear el producto' });
+    return;
   }
 };
 
