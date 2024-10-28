@@ -2,6 +2,8 @@ import colors from 'colors';
 import db from './config/db';
 import express from 'express';
 import productsRouter from './router';
+import swaggerSpec from './config/swagger';
+import swaggerUi from 'swagger-ui-express';
 
 // Conectar a la base de datos
 export async function connectDB() {
@@ -25,8 +27,13 @@ server.use(express.json());
 // Routing
 server.use('/api/products', productsRouter);
 
+/*
 server.get('/api', (req, res) => {
   res.json({ msg: 'Desde API' });
 });
+*/
+
+// Docs
+server.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 export default server;
