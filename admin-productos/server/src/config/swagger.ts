@@ -1,3 +1,4 @@
+import { SwaggerUiOptions } from 'swagger-ui-express';
 import swaggerJSDoc from 'swagger-jsdoc';
 
 const options: swaggerJSDoc.Options = {
@@ -19,5 +20,19 @@ const options: swaggerJSDoc.Options = {
 };
 
 const swaggerSpec = swaggerJSDoc(options);
+
+export const swaggerUiOptions: SwaggerUiOptions = {
+  customCss: `
+    .topbar-wrapper .link {
+      content: url('https://codigoconjuan.com/wp-content/themes/cursosjuan/img/logo.svg');
+      height: 80px;
+      width: auto;
+    }
+    .swagger-ui .topbar {
+      background-color: #2b3b45;
+    }
+  `,
+  customSiteTitle: 'Documentación Rest API Express / Typescript'
+}
 
 export default swaggerSpec;

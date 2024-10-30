@@ -20,41 +20,39 @@ const router = Router();
  *  schemas:
  *    Product:
  *      type: object
- *      properties: 
- *        id: 
+ *      properties:
+ *        id:
  *          type: integer
  *          description: The product ID
  *          example: 1
- *        name: 
+ *        name:
  *          type: string
  *          description: The product name
  *          example: Monitor curvo de 49 pulgadas
- *        price: 
+ *        price:
  *          type: number
  *          description: The product price
  *          example: 300
- *        availability: 
+ *        availability:
  *          type: boolean
  *          description: The product availability
  *          example: true
  */
 
-
-
 /**
  * @swagger
  * /api/products:
- *  get: 
+ *  get:
  *    summary: Get a list of products
- *    tags: 
+ *    tags:
  *      - Products
  *    description: Return a list of products
- *    responses: 
- *      200: 
+ *    responses:
+ *      200:
  *        description: Succesful response
- *        content: 
+ *        content:
  *          application/json:
- *            schema: 
+ *            schema:
  *              type: array
  *              items:
  *                $ref: '#/components/schemas/Product'
@@ -76,18 +74,18 @@ router.get('/', getProducts);
  *      required: true
  *      schema:
  *        type: integer
- *    responses: 
+ *    responses:
  *      200:
  *        description: Succesful response
  *        content:
  *          application/json:
- *            schema: 
+ *            schema:
  *              $ref: '#/components/schemas/Product'
  *      404:
  *        description: Not Found
  *      400:
  *        description: Bad request, invalid ID
- * 
+ *
  */
 router.get(
   '/:id',
@@ -96,6 +94,38 @@ router.get(
   getProductById
 );
 
+/**
+ * @swagger
+ * /api/products:
+ *  post:
+ *    summary: Creates a new product
+ *    tags:
+ *      - Products
+ *    description: Returns a new record in the database
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *         schema:
+ *           type: object
+ *           properties:
+ *             name:
+ *               type: string
+ *               example: "Monitor Curvo 49 Pulgadas"
+ *             price:
+ *               type: number
+ *               example: 399
+ *    responses:
+ *      201:
+ *        description: Susccesful response
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Product'
+ *      400:
+ *        description: Bad request invalid input data
+ *
+ */
 router.post(
   '/',
   body('name')
@@ -112,6 +142,49 @@ router.post(
   createProduct
 );
 
+/**
+ * @swagger
+ * /api/products/{id}:
+ *  put:
+ *    summary: Updates a product with user input
+ *    tags:
+ *      - Products
+ *    description: Returns the updated product
+ *    parameters:
+ *    - in: path
+ *      name: id
+ *      description: The ID of the product to retreive
+ *      required: true
+ *      schema:
+ *        type: integer
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *         schema:
+ *           type: object
+ *           properties:
+ *             name:
+ *               type: string
+ *               example: "Monitor Curvo 49 Pulgadas"
+ *             price:
+ *               type: number
+ *               example: 399
+ *             availability:
+ *                type: boolean
+ *                example: true
+ *    responses:
+ *      200:
+ *        description: Susccesful response
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Product'
+ *      400:
+ *        description: Bad request - Invalid ID or Invalid Input Data
+ *      404:
+ *        description: Product not found
+ */
 router.put(
   '/:id',
   param('id').isInt().withMessage('id no válido'),
@@ -132,12 +205,68 @@ router.put(
   updateProduct
 );
 
+/**
+ * @swagger
+ * /api/products/{id}:
+ *  patch:
+ *    summary: Update product availability
+ *    tags: 
+ *      - Products
+ *    description: Returns the updated availability
+ *    parameters:
+ *    - in: path
+ *      name: id
+ *      description: The ID of the product to retreive
+ *      required: true
+ *      schema:
+ *        type: integer
+ *    responses:
+ *      200:
+ *        description: Susccesful response
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Product'
+ *      400:
+ *        description: Bad request - Invalid ID
+ *      404:
+ *        description: Product not found
+ *     
+ */
 router.patch(
   '/:id',
   param('id').isInt().withMessage('id no válido'),
   updateAvailability
 );
 
+/**
+ * @swagger
+ * /api/products/{id}:
+ *  delete:
+ *    summary: Deletes a product by a given ID
+ *    tags:
+ *      - Products
+ *    description: Returns a confirmation message
+ *    parameters:
+ *    - in: path
+ *      name: id
+ *      description: The ID of the product to delete
+ *      required: true
+ *      schema:
+ *        type: integer    
+ *    responses:
+ *      200:
+ *        description: The product was deleted
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: string
+ *              value: 'Producto eliminado'
+ *      400:
+ *        description: Bad request - Invalid ID
+ *      404:
+ *        description: Product not found
+ */
 router.delete(
   '/:id',
   param('id').isInt().withMessage('id no válido'),

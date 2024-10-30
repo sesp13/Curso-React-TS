@@ -1,8 +1,9 @@
+import swaggerSpec, { swaggerUiOptions } from './config/swagger';
+
 import colors from 'colors';
 import db from './config/db';
 import express from 'express';
 import productsRouter from './router';
-import swaggerSpec from './config/swagger';
 import swaggerUi from 'swagger-ui-express';
 
 // Conectar a la base de datos
@@ -34,6 +35,10 @@ server.get('/api', (req, res) => {
 */
 
 // Docs
-server.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+server.use(
+  '/docs',
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerSpec, swaggerUiOptions)
+);
 
 export default server;
