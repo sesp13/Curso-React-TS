@@ -1,6 +1,7 @@
+import { Form, useNavigate } from 'react-router-dom';
+
 import { Product } from '../types';
 import { formatCurrency } from '../utils';
-import { useNavigate } from 'react-router-dom';
 
 type ProductDetailsProps = {
   product: Product;
@@ -29,6 +30,14 @@ export const ProductDetails = ({ product }: ProductDetailsProps) => {
           >
             Editar
           </button>
+          <Form className="w-full" method='POST'>
+            <input
+              type="submit"
+              value="Eliminar"
+              className="bg-red-600 rounded-lg w-full 
+              font-bold text-sm text-white p-2 uppercase text-center"
+            />
+          </Form>
         </div>
       </td>
     </tr>

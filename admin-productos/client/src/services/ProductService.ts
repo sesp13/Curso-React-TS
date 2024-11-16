@@ -7,6 +7,7 @@ import {
 
 import axios from 'axios';
 import { safeParse } from 'valibot';
+import { toBoolean } from '../utils';
 
 type ProductData = {
   [k: string]: FormDataEntryValue;
@@ -64,16 +65,18 @@ export async function getProductById(id: Product['id']) {
 
 export async function updateProduct(data: ProductData, id: Product['id']) {
   try {
-    const result = safeParse(DraftProductSchema, {
+    const result = safeParse(ProductSchema, {
+      id,
       name: data.name,
       price: +data.price,
-      availability: data.availability
+      availability: toBoolean(data.availability.toString()),
     });
     if (result.success) {
       const url = `${import.meta.env.VITE_API_URL}/api/products/${id}`;
       await axios.put(url, {
         name: result.output.name,
         price: result.output.price,
+        availability: result.output.availability,
       });
     } else {
       throw new Error('Datos no válidos');
