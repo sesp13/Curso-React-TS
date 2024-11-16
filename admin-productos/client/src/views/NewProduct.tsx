@@ -30,8 +30,6 @@ export async function action({ request }: ActionFunctionArgs) {
 export const NewProduct = () => {
   const error = useActionData() as string;
 
-  console.log(error);
-
   return (
     <>
       <div className="flex justify-between">
