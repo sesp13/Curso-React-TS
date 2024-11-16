@@ -6,8 +6,8 @@
   "scripts": {
     "test": "jest --detectOpenHandles",
     "test:coverage": "npm run pretest && jest --detectOpenHandles --coverage",
+    "build": "tsc",
     "dev": "nodemon --exec npx tsx src/index.ts",
-    "build": "npx tsc",
     "pretest": "ts-node ./src/data --clear"
   },
   "author": "sesp13",
