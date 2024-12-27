@@ -22,7 +22,10 @@ export const CreateProjectView = () => {
 
   const { mutate } = useMutation({
     mutationFn: createProject,
-    onError: () => {},
+    onError: (error) => {
+      console.log('Hola');
+      toast.error(error.message);
+    },
     onSuccess: (data) => {
       toast.success(data?.msg);
       navigate('/');
