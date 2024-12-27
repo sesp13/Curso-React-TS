@@ -14,7 +14,9 @@ export class ProjectController {
       return;
     } catch (error) {
       console.log(error);
-      res.json({ msg: 'Error inesperado contacte al administrador' });
+      res
+        .status(500)
+        .json({ msg: 'Error inesperado contacte al administrador' });
       return;
     }
   };
