@@ -21,3 +21,5 @@ export type ProjectFormData = Pick<
   Project,
   'clientName' | 'projectName' | 'description'
 >;
+
+export type GenericProjectResponse = { msg: string; project: Project };
