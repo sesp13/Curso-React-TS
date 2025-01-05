@@ -22,13 +22,14 @@ export const taskSchema = z.object({
 
 export type Task = z.infer<typeof taskSchema>;
 export type TaskFormData = Pick<Task, 'name' | 'description'>;
+export type GenericTaskResponse = { msg: string; task: Task };
 
 /** Projects */
 export const projectSchema = z.object({
   _id: z.string(),
   projectName: z.string(),
   clientName: z.string(),
-  description: z.string()
+  description: z.string(),
 });
 
 export const dashboardProjectSchema = z.array(
