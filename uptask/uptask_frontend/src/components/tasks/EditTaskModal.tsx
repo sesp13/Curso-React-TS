@@ -1,12 +1,13 @@
-import { Fragment } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { Task, TaskFormData } from '@/types/index';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import TaskForm from './TaskForm';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { updateTask } from '@/api/TaskAPI';
+import { useNavigate, useParams } from 'react-router-dom';
+
+import { Fragment } from 'react';
+import TaskForm from './TaskForm';
 import { toast } from 'react-toastify';
+import { updateTask } from '@/api/TaskAPI';
+import { useForm } from 'react-hook-form';
 
 type EditTaskModalProps = {
   data: Task;
@@ -39,7 +40,8 @@ export const EditTaskModal = ({ data, taskId }: EditTaskModalProps) => {
       toast.error(error.message);
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['editProject', projectId] });
+      queryClient.invalidateQueries({ queryKey: ['project', projectId] });
+      queryClient.invalidateQueries({ queryKey: ['task', taskId] });
       toast.success(data?.msg);
       reset();
       closeModal();

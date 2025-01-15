@@ -2,6 +2,7 @@ import {
   GenericMessageResponse,
   GenericTaskResponse,
   Task,
+  taskSchema,
 } from '@/types/index';
 import { Project, TaskFormData } from '../types';
 
@@ -12,6 +13,7 @@ type TaskAPI = {
   formData: TaskFormData;
   projectId: Project['_id'];
   taskId: Task['_id'];
+  status: Task['status'];
 };
 
 export async function createTask({
@@ -36,7 +38,10 @@ export async function getTaskById({
   try {
     const url = `/projects/${projectId}/tasks/${taskId}`;
     const { data } = await api.get<GenericTaskResponse>(url);
-    return data.task;
+    const respose = taskSchema.safeParse(data.task);
+    if (respose.success) {
+      return respose.data;
+    }
   } catch (error) {
     if (isAxiosError(error) && error.message) {
       throw new Error(error.response?.data.error);
@@ -67,6 +72,22 @@ export async function deleteTask({
   try {
     const url = `/projects/${projectId}/tasks/${taskId}`;
     const { data } = await api.delete<GenericMessageResponse>(url);
+    return data.msg;
+  } catch (error) {
+    if (isAxiosError(error) && error.message) {
+      throw new Error(error.response?.data.error);
+    }
+  }
+}
+
+export async function updateStatus({
+  projectId,
+  taskId,
+  status,
+}: Pick<TaskAPI, 'projectId' | 'taskId' | 'status'>) {
+  try {
+    const url = `/projects/${projectId}/tasks/${taskId}/status`;
+    const { data } = await api.post<GenericTaskResponse>(url, { status });
     return data.msg;
   } catch (error) {
     if (isAxiosError(error) && error.message) {
