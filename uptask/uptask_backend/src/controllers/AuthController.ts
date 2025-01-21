@@ -1,13 +1,17 @@
 import { Request, Response } from 'express';
 import User from '../models/user';
 import { hashPassword } from '../utils/auth';
+import Token from '../models/token';
+import { generateToken } from '../utils/token';
+import { transporter } from '../config/nodemailer';
+import { AuthEmail } from '../emails/AuthEmail';
 
 export class AuthController {
   static createAccount = async (req: Request, res: Response) => {
     try {
       const { password, email } = req.body;
 
-      // Prevenir duplicados
+      // Prevent duplicates
       const userExists = await User.findOne({ email });
       if (userExists) {
         res
@@ -18,7 +22,20 @@ export class AuthController {
 
       const user = new User(req.body);
       user.password = await hashPassword(password);
-      await user.save();
+
+      // Generate token
+      const token = new Token();
+      token.token = generateToken();
+      token.user = user.id;
+
+      // Send Email
+      await AuthEmail.sendConfirmationEmail({
+        email: user.email,
+        name: user.name,
+        token: token.token,
+      });
+
+      await Promise.allSettled([user.save(), token.save()]);
 
       res.json({ msg: 'Cuenta creada, revisa tu email para confirmarla' });
       return;
