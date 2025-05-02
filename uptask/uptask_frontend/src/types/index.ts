@@ -3,6 +3,18 @@ import { z } from 'zod';
 /** Common */
 export type GenericMessageResponse = { msg: string };
 
+/** Auth & Users */
+export const authSchema = z.object({
+  name: z.string(),
+  email: z.string().email(),
+  password: z.string(),
+  password_confirmation: z.string(),
+});
+
+export type Auth = z.infer<typeof authSchema>;
+
+export type UserLoginForm = Pick<Auth, 'email' | 'password'>;
+
 /** Tasks */
 export const taskStatusSchema = z.enum([
   'pending',

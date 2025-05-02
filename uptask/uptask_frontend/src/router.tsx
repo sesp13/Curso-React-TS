@@ -1,8 +1,11 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+
 import { AppLayout } from '@/layouts/AppLayout';
-import { DashboardView } from '@/views/DashboardView';
+import { AuthLayout } from './layouts/AuthLayout';
 import { CreateProjectView } from '@/views/projects/CreateProjectView';
+import { DashboardView } from '@/views/DashboardView';
 import { EditProjectView } from '@/views/projects/EditProjectView';
+import { LoginView } from './views/auth/LoginView';
 import { ProjectDetailsView } from '@/views/projects/ProjectDetailsView';
 
 export default function Router() {
@@ -23,6 +26,9 @@ export default function Router() {
             path="/projects/:projectId/edit"
             element={<EditProjectView />}
           ></Route>
+        </Route>
+        <Route element={<AuthLayout />}>
+          <Route path='/auth/login' element={<LoginView />}></Route>
         </Route>
       </Routes>
     </BrowserRouter>
