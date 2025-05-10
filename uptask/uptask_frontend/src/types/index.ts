@@ -9,11 +9,14 @@ export const authSchema = z.object({
   email: z.string().email(),
   password: z.string(),
   password_confirmation: z.string(),
+  token: z.string(),
 });
 
 export type Auth = z.infer<typeof authSchema>;
 
 export type UserLoginForm = Pick<Auth, 'email' | 'password'>;
+export type UserRegistrationForm = Pick<Auth, 'name' | 'email' | 'password' | 'password_confirmation' >;
+export type ConfirmToken = Pick<Auth, 'token' >;
 
 /** Tasks */
 export const taskStatusSchema = z.enum([
