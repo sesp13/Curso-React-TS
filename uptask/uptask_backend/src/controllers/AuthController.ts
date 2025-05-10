@@ -53,7 +53,7 @@ export class AuthController {
       const tokenExists = await Token.findOne({ token });
       if (!tokenExists) {
         const error = new Error('Token no válido!');
-        res.status(401).json({ error: error.message });
+        res.status(401).json({ msg: error.message });
         return;
       }
 
