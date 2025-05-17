@@ -164,4 +164,41 @@ export class AuthController {
       return;
     }
   };
+
+  static forgotPassword = async (req: Request, res: Response) => {
+    try {
+      const { email } = req.body;
+
+      const user = await User.findOne({ email });
+      if (!user) {
+        res
+          .status(409)
+          .json({ msg: `El usuario con correo ${email} no existe` });
+        return;
+      }
+
+      // Generate token
+      const token = new Token();
+      token.token = generateToken();
+      token.user = user.id;
+      await token.save();
+
+      // Send Email
+      await AuthEmail.sendPasswordResetToken({
+        email: user.email,
+        name: user.name,
+        token: token.token,
+      });
+
+      res.json({ msg: 'Revisa tu email para nuevas instrucciones' });
+      return;
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({
+        msg: 'Error inesperado contacte al administrador',
+      });
+      return;
+    }
+  };
+
 }
