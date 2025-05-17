@@ -82,7 +82,7 @@ export class AuthController {
 
       if (!user) {
         const error = new Error('Usuario no encontrado');
-        res.status(401).json({ error: error.message });
+        res.status(401).json({ msg: error.message });
         return;
       }
 
@@ -101,18 +101,60 @@ export class AuthController {
         const error = new Error(
           'Usuario no confirmado, hemos enviado un email de confirmación'
         );
-        res.status(401).json({ error: error.message });
+        res.status(401).json({ msg: error.message });
         return;
       }
 
       const isPasswordCorrect = await checkPassword(password, user.password);
       if (!isPasswordCorrect) {
         const error = new Error('Login incorrecto');
-        res.status(401).json({ error: error.message });
+        res.status(401).json({ msg: error.message });
         return;
       }
 
       res.status(200).json({ msg: 'Login' });
+      return;
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({
+        msg: 'Error inesperado contacte al administrador',
+      });
+      return;
+    }
+  };
+
+  static requestConfirmationCode = async (req: Request, res: Response) => {
+    try {
+      const { email } = req.body;
+
+      const user = await User.findOne({ email });
+      if (!user) {
+        res
+          .status(409)
+          .json({ msg: `El usuario con correo ${email} no existe` });
+        return;
+      }
+
+      if (user.confirmed) {
+        res.status(409).json({ msg: 'El usuario ya esta confirmado' });
+        return;
+      }
+
+      // Generate token
+      const token = new Token();
+      token.token = generateToken();
+      token.user = user.id;
+
+      // Send Email
+      await AuthEmail.sendConfirmationEmail({
+        email: user.email,
+        name: user.name,
+        token: token.token,
+      });
+
+      await Promise.allSettled([user.save(), token.save()]);
+
+      res.json({ msg: 'Se envió un nuevo token a tu email' });
       return;
     } catch (error) {
       console.log(error);
