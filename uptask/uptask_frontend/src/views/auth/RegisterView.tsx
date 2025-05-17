@@ -25,7 +25,7 @@ export const RegisterView = () => {
   const { mutate } = useMutation({
     mutationFn: createAccount,
     onError: (error) => {
-      toast.error(error.message)
+      toast.error(error.message);
     },
     onSuccess: (data) => {
       toast.success(data?.msg);
@@ -138,6 +138,12 @@ export const RegisterView = () => {
           className="text-center text-gray-300 font-normal "
         >
           ¿Ya tienes cuenta? Inicia sesión
+        </Link>
+        <Link
+          to={'/auth/forgot-password'}
+          className="text-center text-gray-300 font-normal "
+        >
+          ¿Olvidaste tu contraseña? Reestablecer
         </Link>
       </nav>
     </>
