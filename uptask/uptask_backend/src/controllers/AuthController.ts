@@ -201,4 +201,54 @@ export class AuthController {
     }
   };
 
+  static validateToken = async (req: Request, res: Response) => {
+    try {
+      const { token } = req.body;
+      const tokenExists = await Token.findOne({ token });
+      if (!tokenExists) {
+        const error = new Error('Token no válido!');
+        res.status(401).json({ msg: error.message });
+        return;
+      }
+
+      res.json({ msg: 'Token válido, define tu nuevo password' });
+
+      return;
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({
+        msg: 'Error inesperado contacte al administrador',
+      });
+      return;
+    }
+  };
+
+  static updatePasswordWithToken = async (req: Request, res: Response) => {
+    try {
+      const { token } = req.params;
+      const { password } = req.body;
+      const tokenExists = await Token.findOne({ token });
+
+      if (!tokenExists) {
+        const error = new Error('Token no válido!');
+        res.status(401).json({ msg: error.message });
+        return;
+      }
+
+      const user = await User.findById(tokenExists.user);
+      user.password = await hashPassword(password);
+
+      await Promise.allSettled([user.save(), tokenExists.deleteOne()]);
+
+      res.json({ msg: 'El password se modificó correctamente' });
+
+      return;
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({
+        msg: 'Error inesperado contacte al administrador',
+      });
+      return;
+    }
+  };
 }
