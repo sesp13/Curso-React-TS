@@ -1,6 +1,7 @@
 import {
   ConfirmToken,
   ForgotPasswordForm,
+  NewPasswordFormType,
   RequestConfirmationCodeForm,
   UserLoginForm,
   UserRegistrationForm,
@@ -48,7 +49,7 @@ export async function requestConfirmationCode(
 }
 
 export async function authenticateUser(formData: UserLoginForm) {
-    try {
+  try {
     const url = '/auth/login';
     const { data } = await api.post(url, formData);
     return data;
@@ -60,8 +61,38 @@ export async function authenticateUser(formData: UserLoginForm) {
 }
 
 export async function forgotPassword(formData: ForgotPasswordForm) {
-    try {
+  try {
     const url = '/auth/forgot-password';
+    const { data } = await api.post(url, formData);
+    return data;
+  } catch (error) {
+    if (isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.msg);
+    }
+  }
+}
+
+export async function validateToken(formData: ConfirmToken) {
+  try {
+    const url = '/auth/validate-token';
+    const { data } = await api.post(url, formData);
+    return data;
+  } catch (error) {
+    if (isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.msg);
+    }
+  }
+}
+
+export async function updatePasswordWithToken({
+  formData,
+  token,
+}: {
+  formData: NewPasswordFormType;
+  token: ConfirmToken['token'];
+}) {
+  try {
+    const url = `/auth/update-password/${token}`;
     const { data } = await api.post(url, formData);
     return data;
   } catch (error) {
